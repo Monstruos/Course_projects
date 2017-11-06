@@ -8,8 +8,10 @@ Also, this program is calculating labor of alforithm
 
 using namespace std;
 
-int **FMM(int **A, int **B, int n);
+int T = 0;
 
+int **FMM(int **A, int **B, int n);
+int **SMM(int **A, int **B, int n);
 int **addsub(int **A, int **B, int n, int k);
 
 int main(int argc, char const *argv[])
@@ -49,7 +51,7 @@ int main(int argc, char const *argv[])
 	}
 	n = bufn;
 	// printing of matrixes
-	for(i = 0; i < n; ++i) {
+	/*for(i = 0; i < n; ++i) {
 		for(j = 0; j < n; ++j) {
 			cout.width(5);
 			cout << A[i][j];
@@ -65,11 +67,11 @@ int main(int argc, char const *argv[])
 		}
 		cout << endl;
 	}
-	cout << endl;
+	cout << endl;*/
 
 	int **C = FMM(A, B, n);
 	n = resn;
-
+	cout << "T = " << T << endl;
 	cout << "C" << endl;
 	if(n < 16) {
 		for(i = 0; i < n; ++i) {
@@ -120,8 +122,8 @@ int **FMM(int **A, int **B, int n) {
 	int **C = new int *[n];
 	for(i = 0; i < n; ++i)
 		C[i] = new int [n];
-	if( n == 1 ) {
-		C[0][0] = A[0][0] * B[0][0];
+	if( n <= 64 ) {
+		C = SMM(A, B, n);
 		return C;
 	}
 
@@ -208,8 +210,33 @@ int **addsub(int **A, int **B, int n, int k) {
 	int **C = new int *[n];
 	for(int i = 0; i < n; ++i) {
 		C[i] = new int [n];
-		for(int j = 0; j < n; ++j)
+		for(int j = 0; j < n; ++j) {
 			C[i][j] = A[i][j] + k * B[i][j];
+			T += 2;
+		}
 	}
+	return C;
+}
+
+int **SMM(int **A, int **B, int n) {
+	int i, j, k;
+
+	int **C = new int *[n];
+	for(i = 0; i < n; ++i) {
+		C[i] = new int [n];
+		for(j = 0; j < n; ++j) {
+			C[i][j] = 0;
+		}
+	}
+
+	for(i = 0; i < n; ++i) {
+		for(j = 0; j < n; ++j) {
+			for(k = 0; k < n; ++k) {
+				C[i][j] += A[i][k] * B[k][j];
+				T += 3;
+			}
+		}
+	}
+
 	return C;
 }
