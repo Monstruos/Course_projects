@@ -14,23 +14,42 @@ int **addsub(int **A, int **B, int n, int k);
 
 int main(int argc, char const *argv[])
 {
-	int n = 4;
+	int n = 100;
+	cout << "n: ";
+	cin >> n;
 
+	int bufn = 1, resn = n;
+	int raz = 0;
+	while(bufn < n) {
+		bufn <<= 1;
+	}
 	int i, j;
-	int **A = new int *[n];
-	int **B = new int *[n];
+	int **A = new int *[bufn];
+	int **B = new int *[bufn];
 
 	for(i = 0; i < n; ++i) {
-		A[i] = new int [n];
-		B[i] = new int [n];
+		A[i] = new int [bufn];
+		B[i] = new int [bufn];
 		for(j = 0; j < n; ++j) {
 			A[i][j] = -1 * (i + j);
 			B[i][j] = i - j;
 		}
+		for(j = n; j < bufn; ++j) {
+			A[i][j] = 0;
+			B[i][j] = 0;
+		}
 	}
-
+	for(i = n; i < bufn; ++i) {
+		A[i] = new int [bufn];
+		B[i] = new int [bufn];
+		for(j = 0; j < bufn; ++j) {
+			A[i][j] = 0;
+			B[i][j] = 0;
+		}
+	}
+	n = bufn;
 	// printing of matrixes
-	/*for(i = 0; i < n; ++i) {
+	for(i = 0; i < n; ++i) {
 		for(j = 0; j < n; ++j) {
 			cout.width(5);
 			cout << A[i][j];
@@ -46,18 +65,49 @@ int main(int argc, char const *argv[])
 		}
 		cout << endl;
 	}
-	cout << endl;*/
+	cout << endl;
 
 	int **C = FMM(A, B, n);
+	n = resn;
+
 	cout << "C" << endl;
-	for(i = 0; i < n; ++i) {
-		for(j = 0; j < n; ++j) {
-			cout.width(5);
-			cout << C[i][j];
+	if(n < 16) {
+		for(i = 0; i < n; ++i) {
+			for(j = 0; j < n; ++j) {
+				cout.width(5);
+				cout << C[i][j];
+			}
+			cout << endl;
+		}
+	} else {
+		for(i = 0; i < 4; ++i) {
+			for(j = 0; j < 4; ++j) {
+				cout.width(8);
+				cout << C[i][j];
+			}
+			cout << "     ...";
+			cout.width(8);
+			cout << C[i][n-1];
+			cout << endl;
+		}
+
+		for(i = 0; i < 6; ++i) {
+			cout << "     ...";
 		}
 		cout << endl;
+
+		for(j = 0; j < 4; ++j) {
+			cout.width(8);
+			cout << C[n-1][j];
+		}
+		cout << "     ...";
+		cout.width(8);
+		cout << C[n-1][n-1];
+		cout << endl;
 	}
+
 	cout << endl;
+
 	system("PAUSE");
 	return 0;
 }
