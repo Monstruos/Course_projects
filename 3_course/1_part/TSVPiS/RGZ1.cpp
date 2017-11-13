@@ -122,10 +122,10 @@ int **FMM(int **A, int **B, int n) {
 	int **C = new int *[n];
 	for(i = 0; i < n; ++i)
 		C[i] = new int [n];
-	if( n <= 64 ) {
+	/*if( n <= 64 ) {
 		C = SMM(A, B, n);
 		return C;
-	}
+	}*/
 
 	// Ak, Bk, Ck are 12 matrixes for fast multiplying
 	int ***Ak = new int **[4];
