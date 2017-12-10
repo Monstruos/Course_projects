@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-12-03T12:24:05
+# Project created by QtCreator 2017-12-10T14:51:40
 #
 #-------------------------------------------------
 
@@ -8,15 +8,18 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = CourseDB
+TARGET = DB
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    database.cpp
+    database.cpp \
+    userdata.cpp
 
 HEADERS  += mainwindow.h \
-    database.h
+    database.h \
+    userdata.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    userdata.ui
