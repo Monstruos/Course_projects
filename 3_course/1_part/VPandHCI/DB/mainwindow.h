@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 #include "database.h"
 #include "userdata.h"
+#include "dialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,9 +28,12 @@ private slots:
 
     void on_dbView_doubleClicked(const QModelIndex &index);
 
+    void on_addAbon_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlRelationalTableModel *mod;
+    QSqlTableModel *mod2;
     DataBase *db;
     userdata *ud;
     void date_comp(const QString &arg1, const QString &arg2);

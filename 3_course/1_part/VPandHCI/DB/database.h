@@ -17,8 +17,6 @@
 #define TABLE1_FN       "Name"
 #define TABLE1_PNUM     "Phone"
 #define TABLE1_GND      "Gender"
-#define TABLE1_REGDT    "DateOfReg"
-#define TABLE1_SUBDR    "SubDuration"
 #define TABLE1_PHOTO    "Doc_note"
 #define TABLE1_NOTDR    "Doc_note_dur"
 
@@ -30,6 +28,12 @@
 #define TABLE2_COST     "Cost"
 #define TABLE2_USRID    "UserID"
 #define TABLE2_ISPAID   "IsPaid"
+
+
+#define TABLE3          "AbonType"
+#define TABLE3_NAME     "Name"
+#define TABLE3_COST     "Cost"
+#define TABLE3_DUR      "Dur"
 
 class DataBase : public QObject
 {

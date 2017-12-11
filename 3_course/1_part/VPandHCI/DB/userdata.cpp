@@ -8,6 +8,7 @@ userdata::userdata(DataBase *db, QWidget *parent) :
 
     b = db;
     ui->setupUi(this);
+    this->setWindowTitle("Информация о пользователе");
     model = new QSqlTableModel();
     model->setTable(TABLE2);
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Дата регистрации"));
@@ -74,6 +75,7 @@ void userdata::setData(int userID)
     ui->prevAbon->setModel(model);
     ui->prevAbon->setColumnHidden(0, true);
     ui->prevAbon->setColumnHidden(3, true);
+    ui->prevAbon->setColumnHidden(5, true);
     ui->prevAbon->setAlternatingRowColors(true);
     ui->prevAbon->resizeColumnsToContents();
     ui->prevAbon->resizeRowsToContents();
