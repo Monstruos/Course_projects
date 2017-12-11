@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     db = new DataBase(this);
-    db->connectToDataBase("C:\\database.db");
+    db->connectToDataBase("/home/monstruos/GitHub/Course_projects/3_course/1_part/VPandHCI/database/database.db");
 
     ud = new userdata(db, this);
     ud->hide();
@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mod->setHeaderData(1, Qt::Horizontal, QObject::tr("ФИО"));
     mod->setHeaderData(2, Qt::Horizontal, QObject::tr("Мобильный телефон"));
     mod->setHeaderData(3, Qt::Horizontal, QObject::tr("Пол"));
+
     mod->select();
     ui->dbView->setModel(mod);
     ui->dbView->setColumnHidden(0, true);

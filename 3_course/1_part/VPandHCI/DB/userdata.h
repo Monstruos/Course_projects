@@ -22,6 +22,8 @@ public:
 private slots:
     void on_addDocNote_clicked();
 
+    void on_addAbon_clicked();
+
 private:
     Ui::userdata *ui;
     DataBase *b;

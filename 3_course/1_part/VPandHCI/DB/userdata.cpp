@@ -44,14 +44,30 @@ void userdata::setData(int userID)
     ui->docphoto->setPixmap(DocNote);
     ui->untilLine->setText(DocNoteDur.toString("yyyy-MM-dd"));
     int status = DocNoteDur.daysTo(QDate::currentDate());
-    QPalette pal = ui->untilDateLabel->palette();
+    QPalette pal = ui->untilLine->palette();
     if(status >= 0)
-        pal.setColor(ui->untilDateLabel->foregroundRole(), Qt::red);
+        pal.setColor(ui->untilLine->foregroundRole(), Qt::red);
     else if(status > -7)
-        pal.setColor(ui->untilDateLabel->foregroundRole(), Qt::yellow);
+        pal.setColor(ui->untilLine->foregroundRole(), Qt::yellow);
     else
-        pal.setColor(ui->untilDateLabel->foregroundRole(), Qt::green);
-    ui->untilDateLabel->setPalette(pal);
+        pal.setColor(ui->untilLine->foregroundRole(), Qt::green);
+    ui->untilLine->setPalette(pal);
+
+    s->exec("SELECT DateOfReg, SubDuration FROM Abonements WHERE id = " + QString::number(userID) +
+            ", DateOfReg <= " + QDate::currentDate().toString("yyyy-MM-dd") +
+            ", SubDuration >= " + QDate::currentDate().toString("yyyy-MM-dd"));
+    if(s->next()) { // if abonement is existing now
+        ui->groupBox_2->show();
+        ui->addAbon->hide();
+        DateOfReg = QDate::fromString(s->value(0).toString(), "yyyy-MM-dd");
+        SubDuration = QDate::fromString(s->value(1).toString(), "yyyy-MM-dd");
+        ui->abonDurFromLine->setText(DateOfReg.toString("yyyy-MM-dd"));
+        ui->abonDurToLine->setText(SubDuration.toString("yyyy-MM-dd"));
+    } else {
+        ui->groupBox_2->hide();
+        ui->addAbon->show();
+    }
+
 
     model->setFilter(QString("idAbonements = %1").arg(id));
     model->select();
@@ -80,3 +96,8 @@ void userdata::on_addDocNote_clicked()
     }
 }
 
+
+void userdata::on_addAbon_clicked()
+{
+
+}
