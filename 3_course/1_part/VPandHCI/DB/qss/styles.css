@@ -1,20 +1,30 @@
 QPushButton {
-background-color: #809fff;
-border-style: outset;
-border-width: 2px;
-border-radius: 10px;
-border-color: beige;
-font: bold 14px;
-min-width: 10em;
-padding: 6px;
+    background-color: #809fff;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: beige;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
 }
 
 QPushButton:hover {
-background-color: #b3d1ff
+    background-color: #b3d1ff
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
 }
 
 MainWindow {
     background-color: #0073e6;
+    background-image: url(:qss/beach.png);
+}
+
+userdata {
+    background-color: #7090f0;
 }
 
 QTabWidget::pane { /* The tab widget frame */
@@ -55,4 +65,5 @@ QTabBar::tab:selected {
 QTableView {
     selection-background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
                                 stop: 0 #b3ffff, stop: 1 white);
+    background-color: #7A9AfA;
 }

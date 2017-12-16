@@ -47,7 +47,7 @@ void userdata::setData(int userID)
     if(status >= 0)
         pal.setColor(ui->untilLine->foregroundRole(), Qt::red);
     else if(status > -7)
-        pal.setColor(ui->untilLine->foregroundRole(), Qt::yellow);
+        pal.setColor(ui->untilLine->foregroundRole(), Qt::darkYellow);
     else
         pal.setColor(ui->untilLine->foregroundRole(), Qt::green);
     ui->untilLine->setPalette(pal);
