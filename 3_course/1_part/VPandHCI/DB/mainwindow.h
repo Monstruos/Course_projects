@@ -32,8 +32,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QSqlRelationalTableModel *mod;
+    QSqlTableModel *mod;
     QSqlTableModel *mod2;
+    QSqlRelationalTableModel *mod3;
     DataBase *db;
     userdata *ud;
     void date_comp(const QString &arg1, const QString &arg2);

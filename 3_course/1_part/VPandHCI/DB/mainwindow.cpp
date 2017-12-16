@@ -7,30 +7,29 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     db = new DataBase(this);
-    db->connectToDataBase(":/database/database.db");
+    db->connectToDataBase("/home/monstruos/GitHub/Course_projects/3_course/1_part/VPandHCI/database/poolbase.db");
     this->setWindowTitle("База данных");
     ud = new userdata(db, this);
     ud->hide();
-
+    this->setFocus();
     ui->dbView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->dbView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->dbView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    mod = new QSqlRelationalTableModel();
+    mod = new QSqlTableModel();
     mod->setTable(TABLE1);
     mod->setHeaderData(1, Qt::Horizontal, QObject::tr("ФИО"));
     mod->setHeaderData(2, Qt::Horizontal, QObject::tr("Мобильный телефон"));
     mod->setHeaderData(3, Qt::Horizontal, QObject::tr("Пол"));
+    qDebug() << mod->columnCount();
     mod->select();
     ui->dbView->setModel(mod);
     ui->dbView->setColumnHidden(0, true);
     ui->dbView->setColumnHidden(4, true);
     ui->dbView->setColumnHidden(5, true);
-    ui->dbView->setColumnHidden(6, true);
-    ui->dbView->setColumnHidden(7, true);
-    ui->dbView->setColumnHidden(8, true);
     ui->dbView->setAlternatingRowColors(true);
     ui->dbView->resizeColumnsToContents();
     ui->dbView->resizeRowsToContents();
+    ui->dbView->horizontalHeader()->setStretchLastSection(true);
 
     mod2 = new QSqlTableModel();
     mod2->setTable(TABLE3);
@@ -43,6 +42,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dbView_2->setAlternatingRowColors(true);
     ui->dbView_2->resizeColumnsToContents();
     ui->dbView_2->resizeRowsToContents();
+    ui->dbView_2->horizontalHeader()->setStretchLastSection(true);
+
+    mod3 = new QSqlRelationalTableModel();
+    mod3->setTable(TABLE2);
+    mod3->setHeaderData(1, Qt::Horizontal, QObject::tr("Дата регистрации абонемента"));
+    mod3->setHeaderData(2, Qt::Horizontal, QObject::tr("Длительность абонемента"));
+    mod3->setHeaderData(3, Qt::Horizontal, QObject::tr("ФИО"));
+    mod3->setHeaderData(4, Qt::Horizontal, QObject::tr("Оплачено"));
+    mod3->setHeaderData(5, Qt::Horizontal, QObject::tr("Тип абонемента"));
+    mod3->setRelation(3, QSqlRelation("PoolVisit", "id", "Name"));
+    mod3->setRelation(5, QSqlRelation("AbonType", "AbonId", "Name"));
+    mod3->select();
 }
 
 MainWindow::~MainWindow()
@@ -58,43 +69,34 @@ void MainWindow::date_comp(const QString &arg1, const QString &arg2)
     QDate pointTo = QDate::fromString(arg2, "yyyy-MM-dd");
     qDebug() << pointFrom << pointTo;
     if (!pointFrom.isValid() && !pointTo.isValid()) {
+        if(ui->dbView->model() != mod) {
+            ui->dbView->setModel(mod);
+            ui->dbView->horizontalHeader()->swapSections(2, 3);
+            ui->dbView->horizontalHeader()->swapSections(1, 3);
+        }
         ui->dbView->setSelectionMode(QAbstractItemView::SingleSelection);
+        ui->dbView->setColumnHidden(4, true);
+        ui->dbView->setColumnHidden(5, true);
         return;
     }
-
-    QSqlQuery query;
-    if(pointTo.isValid())
-        qDebug() << query.exec(QString("SELECT id FROM PoolVisit "
-                   "WHERE id = UserID IN (SELECT UserID FROM Abonements "
-                   "WHERE DateOfReg <= " + pointTo.toString() + ")"));
-    if(pointFrom.isValid())
-        qDebug() << query.exec(QString("SELECT id FROM PoolVisit "
-                   "WHERE id = UserID IN (SELECT UserID FROM Abonements "
-                   "WHERE SubDuration >= " + pointFrom.toString() + ")"));
-    while(query.next()) {
-        int iden = query.value(0).toInt();
-        ui->dbView->showRow(iden);
-    }
-
-    for (int i = 0; i < mod->rowCount(); ++i){
-        ui->dbView->showRow(i);
-        QString str1 = mod->index(i,4).data().toString();
-        QString str2 = mod->index(i,5).data().toString();
-        QDate buf1 = QDate::fromString(str1, "yyyy-MM-dd");
-        QDate buf2 = QDate::fromString(str2, "yyyy-MM-dd");
+    if(pointTo.isValid() && pointFrom.isValid()) {
+        mod3->setFilter(QString("DateOfReg <= '" + pointTo.toString("yyyy-MM-dd") + "' AND SubDuration >= '" + pointFrom.toString("yyyy-MM-dd") + "'"));
+    } else {
         if(pointTo.isValid())
-            qDebug() << query.exec(QString("SELECT id FROM PoolVisit "
-                       "WHERE id = UserID IN (SELECT UserID FROM Abonements "
-                       "WHERE DateOfReg <= " + pointTo.toString() + ")"));
+            mod3->setFilter(QString("DateOfReg <= " + pointTo.toString("yyyy-MM-dd")));
         if(pointFrom.isValid())
-            qDebug() << query.exec(QString("SELECT id FROM PoolVisit "
-                       "WHERE id = UserID IN (SELECT UserID FROM Abonements "
-                       "WHERE SubDuration >= " + pointFrom.toString() + ")"));
-        while(query.next()) {
-            int iden = query.value(0).toInt();
-            ui->dbView->showRow(iden);
-        }
+            mod3->setFilter(QString("SubDuration >= " + pointFrom.toString("yyyy-MM-dd")));
     }
+    if(ui->dbView->model() != mod3) {
+        ui->dbView->setModel(mod3);
+        ui->dbView->horizontalHeader()->swapSections(1, 3);
+        ui->dbView->horizontalHeader()->swapSections(2, 3);
+    }
+    ui->dbView->setColumnHidden(4, false);
+    ui->dbView->setColumnHidden(5, false);
+    ui->dbView->setAlternatingRowColors(true);
+    ui->dbView->resizeColumnsToContents();
+    ui->dbView->resizeRowsToContents();
 }
 
 void MainWindow::on_FNsearch_textChanged(const QString &arg1)
@@ -102,16 +104,12 @@ void MainWindow::on_FNsearch_textChanged(const QString &arg1)
     ui->dbView->setSelectionMode(QAbstractItemView::MultiSelection);
     ui->dbView->clearSelection();
 
-    for (int i = 0; i < mod->rowCount(); ++i){
-        ui->dbView->showRow(i);
-        QString str = mod->index(i,1).data().toString();
-        if (str.startsWith(arg1, Qt::CaseInsensitive))
-            ui->dbView->showRow(i);
-        else
-            ui->dbView->hideRow(i);
-    }
-    if (arg1 == "")
+    QSqlTableModel *m = (QSqlTableModel *)ui->dbView->model();
+    m->setFilter(QString("Name LIKE '%" + arg1 + "%'"));
+    m->select();
+    if(arg1 == "") {
         ui->dbView->setSelectionMode(QAbstractItemView::SingleSelection);
+    }
 }
 
 void MainWindow::on_minData_textChanged(const QString &arg1)

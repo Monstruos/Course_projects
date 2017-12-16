@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "database.h"
+#include "dialoguserabon.h"
 #include <QFileDialog>
 
 namespace Ui {
@@ -27,7 +28,7 @@ private slots:
 private:
     Ui::userdata *ui;
     DataBase *b;
-    QSqlTableModel *model;
+    QSqlRelationalTableModel *model;
     int id;
     QString name;
     QString phone;

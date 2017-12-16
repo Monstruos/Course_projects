@@ -16,16 +16,19 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     database.cpp \
     userdata.cpp \
-    dialog.cpp
+    dialog.cpp \
+    dialoguserabon.cpp
 
 HEADERS  += mainwindow.h \
     database.h \
     userdata.h \
-    dialog.h
+    dialog.h \
+    dialoguserabon.h
 
 FORMS    += mainwindow.ui \
     userdata.ui \
-    dialog.ui
+    dialog.ui \
+    dialoguserabon.ui
 
 RESOURCES += \
     res.qrc
