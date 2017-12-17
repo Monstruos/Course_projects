@@ -37,6 +37,9 @@ MainWindow::MainWindow(QWidget *parent) :
     mod2->setHeaderData(2, Qt::Horizontal, QObject::tr("Стоимость"));
     mod2->setHeaderData(3, Qt::Horizontal, QObject::tr("Длительность (дней)"));
     mod2->select();
+    ui->dbView_2->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->dbView_2->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->dbView_2->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->dbView_2->setModel(mod2);
     ui->dbView_2->setColumnHidden(0, true);
     ui->dbView_2->setAlternatingRowColors(true);
@@ -131,7 +134,7 @@ void MainWindow::on_dbView_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_addAbon_clicked()
 {
-    Dialog a;
+    Dialog a(this, "Добавить абонемент", "Название", "Стоимость", "Длительность");
     int res = a.exec();
     if(res == Dialog::Accepted) {
         QSqlQuery query;
@@ -150,3 +153,30 @@ void MainWindow::on_addAbon_clicked()
     }
 }
 
+
+void MainWindow::on_dbView_2_doubleClicked(const QModelIndex &index)
+{
+    int row = index.row();
+    QString name = mod2->data(mod2->index(row, 1)).toString();
+    QString cost = mod2->data(mod2->index(row, 2)).toString();
+    QString dur = mod2->data(mod2->index(row, 3)).toString();
+    qDebug() << name;
+    Dialog a(this, "Изменить абонемент", "Название", "Стоимость", "Длительность", name, cost, dur);
+    int res = a.exec();
+    if(res == Dialog::Accepted) {
+        QSqlQuery query;
+        QString name, cost, dur;
+        a.getData(name, cost, dur);
+        qDebug() << name << cost << dur;
+        query.prepare("UPDATE AbonType SET "
+                      "Name = :name, Cost = :cost, Dur = :dur "
+                      "WHERE AbonId = :id");
+        query.bindValue(":id", row + 1);
+        query.bindValue(":name", name);
+        query.bindValue(":cost", cost.toInt());
+        query.bindValue(":dur", dur.toInt());
+        qDebug() << query.exec();
+        mod2->select();
+        ui->dbView_2->repaint();
+    }
+}

@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include "database.h"
-#include "dialoguserabon.h"
 #include <QFileDialog>
 
 namespace Ui {
@@ -25,10 +24,15 @@ private slots:
 
     void on_addAbon_clicked();
 
+    void on_includeAbon_clicked();
+
+    void on_cancelAbon_clicked();
+
 private:
     Ui::userdata *ui;
     DataBase *b;
     QSqlRelationalTableModel *model;
+    QSqlTableModel *abonModel;
     int id;
     QString name;
     QString phone;

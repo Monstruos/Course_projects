@@ -23,18 +23,11 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Новый абонемент:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="firstLabel">
            <property name="minimumSize">
             <size>
              <width>80</width>
@@ -47,14 +40,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="name"/>
+          <widget class="QLineEdit" name="firstLine"/>
          </item>
         </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="secLabel">
            <property name="minimumSize">
             <size>
              <width>80</width>
@@ -67,14 +60,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="cost"/>
+          <widget class="QLineEdit" name="secLine"/>
          </item>
         </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QLabel" name="label_4">
+          <widget class="QLabel" name="thirdLabel">
            <property name="minimumSize">
             <size>
              <width>80</width>
@@ -87,7 +80,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="dur"/>
+          <widget class="QLineEdit" name="thirdLine"/>
          </item>
         </layout>
        </item>

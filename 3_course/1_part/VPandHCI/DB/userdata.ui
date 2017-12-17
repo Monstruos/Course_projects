@@ -85,10 +85,16 @@
             <item>
              <widget class="QLabel" name="docphoto">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>471</width>
+                <height>522</height>
+               </size>
               </property>
               <property name="text">
                <string>Фото справки</string>
@@ -154,6 +160,19 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
+          <widget class="QLabel" name="label">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Другие абонементы</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QTableView" name="prevAbon"/>
          </item>
          <item>
@@ -165,7 +184,7 @@
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Абонемент</string>
+            <string>Текущий абонемент</string>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <item row="0" column="0">
@@ -235,6 +254,9 @@
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <widget class="QComboBox" name="abonType"/>
+                </item>
                </layout>
               </item>
              </layout>
@@ -243,23 +265,65 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="addAbon">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>250</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Добавить абонемент</string>
-           </property>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QPushButton" name="addAbon">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Добавить абонемент</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="includeAbon">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Принять</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="cancelAbon">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Отмена</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>

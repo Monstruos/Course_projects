@@ -12,7 +12,14 @@ class Dialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit Dialog(QWidget *parent = 0);
+    Dialog(QWidget *parent = 0,
+           QString header = "header",
+           QString first = "first",
+           QString second = "second",
+           QString third = "third",
+           QString firstLine = "",
+           QString secLine = "",
+           QString thirdLine = "");
     ~Dialog();
     void getData(QString &name, QString &cost, QString &dur);
 

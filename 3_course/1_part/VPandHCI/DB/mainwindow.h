@@ -30,6 +30,8 @@ private slots:
 
     void on_addAbon_clicked();
 
+    void on_dbView_2_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     QSqlTableModel *mod;
