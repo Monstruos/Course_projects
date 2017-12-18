@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include "database.h"
+#include "dialog.h"
+#include <QMessageBox>
 #include <QFileDialog>
 
 namespace Ui {

@@ -8,13 +8,19 @@ userdata::userdata(DataBase *db, QWidget *parent) :
 
     b = db;
     ui->setupUi(this);
+    ui->username->setStyleSheet("color:#ffffff; font-size: 16px");
+    ui->gender->setStyleSheet("color:#ffffff; font-size: 14px");
+    ui->phone->setStyleSheet("color:#ffffff; font-size: 14px");
+    ui->abonDurFromLabel->setStyleSheet("color:#ffffff");
+    ui->abonDurToLabel->setStyleSheet("color:#ffffff");
+    ui->untilLabel->setStyleSheet("color:#ffffff");
     ui->abonDurToLine->setText("");
     ui->abonDurToLine->setText("");
     ui->isCost->setChecked(false);
     ui->prevAbon->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->prevAbon->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->prevAbon->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    this->setWindowTitle("Информация о пользователе");
+    this->setWindowTitle("Информация о пользователе/Редактирование");
     model = new QSqlRelationalTableModel();
     model->setTable(TABLE2);
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Дата регистрации"));
@@ -39,8 +45,6 @@ void userdata::setData(int userID)
     abonModel->select();
     ui->abonType->setModel(abonModel);
     ui->abonType->setModelColumn(1);
-    for(int i = 0; i < ui->abonType->count(); ++i)
-        qDebug() << ui->abonType->itemText(i);
     QSqlQuery *s = new QSqlQuery();
     s->exec("SELECT * FROM PoolVisit WHERE id = " + QString::number(userID));
     s->next();
@@ -177,5 +181,70 @@ void userdata::on_cancelAbon_clicked()
 
 void userdata::on_prevAbon_doubleClicked(const QModelIndex &index)
 {
+    int iden = model->data(model->index(index.row(), 0)).toInt();
+    Dialog a(this, true, true, false, false, true, true);
+    model->setFilter(QString("idAbonements=" + QString::number(iden)));
+    model->select();
+    QSqlRecord rec = model->record(0);
+    QString from = rec.field(1).value().toString();
+    QString to = rec.field(2).value().toString();
+    bool isCost = rec.field(4).value().toBool();
+    int AbonId = rec.field(5).value().toInt();
+    qDebug() << from << to << isCost << AbonId;
+    a.setHeader("Просмотр и редактирование абонемента");
+    a.setFirstLine("Действителен с:", from);
+    a.setSecLine("Действителен до:", to);
+    a.setCheckBox("Оплачено", isCost);
+    a.setComboBox(abonModel, 1, AbonId-1);
+    int res = a.exec();
+    if(res == Dialog::Accepted) {
+        QSqlQuery query;
+        QString RegFrom, RegTo, buf1, TypeAbon;
+        bool buf2, cost;
+
+        a.getData(RegFrom, RegTo, buf1, buf2, cost, TypeAbon);
+        int c = cost;
+        qDebug() << RegFrom << RegTo << cost << "(" << c << ")"
+                 << TypeAbon;
+
+        //parsing to Date
+
+        QDate dateFrom = QDate::fromString(RegFrom, "yyyy-MM-dd");
+        QDate dateTo = QDate::fromString(RegTo, "yyyy-MM-dd");
+        if(!dateFrom.isValid() || !dateTo.isValid()) {
+            QMessageBox::warning(this,
+                                 "Ошибка",
+                                 "Не удалось изменить данные. Возможно, даты не соответствовали формату (YYYY-MM-DD).");
+            return;
+        }
+
+        //finding Abonement type
+        qDebug() << "TypeAbon = " << TypeAbon
+                 << "FILTER: " << QString("Name = '" + TypeAbon + "'");
+        abonModel->setFilter(QString("Name = '" + TypeAbon + "'"));
+        abonModel->select();
+
+
+        query.prepare("UPDATE Abonements SET "
+                      "DateOfReg = :dof, "
+                      "SubDuration = :sd, "
+                      "isPaid = :pd, "
+                      "AbonId = :aid "
+                      "WHERE idAbonements = :id");
+        query.bindValue(":id", id);
+        query.bindValue(":dof", dateFrom.toString("yyyy-MM-dd"));
+        query.bindValue(":sd", dateTo.toString("yyyy-MM-dd"));
+        query.bindValue(":pd", c);
+        query.bindValue(":aid", abonModel->record(0).field(0).value().toInt());
+        qDebug() << iden << dateFrom << dateTo << c << abonModel->record(0).field(0).value().toInt();
+        qDebug() << query.exec();
+        abonModel->setFilter("");
+        abonModel->select();
+        model->setFilter("UserID = " + QString::number(id) +
+                         " AND NOT (DateOfReg <= '" + QDate::currentDate().toString("yyyy-MM-dd") +
+                         "' AND SubDuration >= '" + QDate::currentDate().toString("yyyy-MM-dd") + "')");
+        model->select();
+        ui->prevAbon->repaint();
+    }
 
 }

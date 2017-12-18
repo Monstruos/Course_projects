@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QDebug>
+#include <QSqlTableModel>
 
 namespace Ui {
 class Dialog;
@@ -26,14 +27,17 @@ public:
            bool secLine = false,
            bool thirdLine = false,
            bool radios = false,
-           bool checkbox = false);
+           bool checkbox = false,
+           bool combobox = false);
     ~Dialog();
-    void getData(QString &first, QString &second, QString &third, bool &radio, bool &checkbox);
+    void getData(QString &first, QString &second, QString &third,
+                 bool &radio, bool &checkbox, QString &combobox);
     void setFirstLine(QString label, QString line);
     void setSecLine(QString label, QString line);
     void setThirdLine(QString label, QString line);
     void setRadio(QString first, QString second);
-    void setCheckBox(QString check);
+    void setCheckBox(QString check, bool state);
+    void setComboBox(QSqlTableModel *model, int column, int active);
     void setHeader(QString header);
 
 

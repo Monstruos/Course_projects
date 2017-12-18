@@ -12,6 +12,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ud = new userdata(db, this);
     ud->hide();
     this->setFocus();
+    ui->FN->setStyleSheet("color: #ffffff");
+    ui->From->setStyleSheet("color: #ffffff");
+    ui->To->setStyleSheet("color: #ffffff");
     ui->dbView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->dbView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->dbView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -134,22 +137,34 @@ void MainWindow::on_dbView_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_addAbon_clicked()
 {
-    Dialog a(this, "Добавить абонемент", "Название", "Стоимость", "Длительность");
+    Dialog a(this, true, true, true, false, false);
+    a.setHeader("Новый абонемент");
+    a.setFirstLine("Название:", "");
+    a.setSecLine("Стоимость:", "");
+    a.setThirdLine("Длительность:", "");
     int res = a.exec();
     if(res == Dialog::Accepted) {
         QSqlQuery query;
-        QString name, cost, dur;
-        //a.getData(name, cost, dur);
+        QString name, cost, dur, buf3;
+        bool buf1, buf2;
+        a.getData(name, cost, dur, buf1, buf2, buf3);
         qDebug() << name << cost << dur;
-        query.prepare("INSERT INTO AbonType (AbonId, Name, Cost, Dur)"
-                      "VALUES(:id, :name, :cost, :dur);");
-        query.bindValue(":id", mod2->rowCount() + 1);
+        if(name.isEmpty() || cost.isEmpty() || dur.isEmpty()) {
+            QMessageBox::warning(this,
+                                 "Ошибка",
+                                 "Не удалось создать абонемент: некоторые поля не были заполнены");
+            return;
+        }
+        query.prepare("INSERT INTO AbonType (Name, Cost, Dur)"
+                      "VALUES(:name, :cost, :dur);");
         query.bindValue(":name", name);
         query.bindValue(":cost", cost.toInt());
         query.bindValue(":dur", dur.toInt());
         qDebug() << query.exec();
         mod2->select();
         ui->dbView_2->repaint();
+        ui->dbView_2->resizeColumnsToContents();
+        ui->dbView_2->resizeRowsToContents();
     }
 }
 
@@ -170,7 +185,8 @@ void MainWindow::on_dbView_2_doubleClicked(const QModelIndex &index)
     if(res == Dialog::Accepted) {
         QSqlQuery query;
         bool buf1, buf2;
-        a.getData(name, cost, dur, buf1, buf2);
+        QString buf3;
+        a.getData(name, cost, dur, buf1, buf2, buf3);
         qDebug() << name << cost << dur;
         query.prepare("UPDATE AbonType SET "
                       "Name = :name, Cost = :cost, Dur = :dur "
@@ -196,10 +212,17 @@ void MainWindow::on_newUser_clicked()
     if(res == Dialog::Accepted) {
         QSqlQuery query;
 
-        QString name, phone, buf1; // variables for getData()
+        QString name, phone, buf1, buf3; // variables for getData()
         bool gender, buf2;
-        a.getData(name, phone, buf1, gender, buf2);
+        a.getData(name, phone, buf1, gender, buf2, buf3);
         qDebug() << name << phone << gender;
+        if(name.isEmpty() || phone.isEmpty())
+        {
+            QMessageBox::warning(this,
+                                 "Ошибка",
+                                 "Не удалось создать посетителя: некоторые поля не были заполнены");
+            return;
+        }
         QString g;
         if(gender == true) {
             g = "Мужской";

@@ -26,6 +26,15 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Narkisim</family>
+           <pointsize>16</pointsize>
+           <weight>50</weight>
+           <italic>true</italic>
+           <bold>false</bold>
+          </font>
+         </property>
          <property name="styleSheet">
           <string notr="true">font: italic 16pt &quot;Narkisim&quot;;</string>
          </property>

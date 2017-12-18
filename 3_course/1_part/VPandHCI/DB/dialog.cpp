@@ -6,7 +6,8 @@ Dialog::Dialog(QWidget *parent,
                bool secLine,
                bool thirdLine,
                bool radios,
-               bool checkbox) :
+               bool checkbox,
+               bool combobox) :
     QDialog(parent),
     ui(new Ui::Dialog)
 {
@@ -19,6 +20,9 @@ Dialog::Dialog(QWidget *parent,
     ui->thirdLine->hide();
     ui->radioGroup->hide();
     ui->checkBox->hide();
+    ui->comboBox->hide();
+    ui->radio1->setChecked(true);
+
     if(firstLine) {
         ui->firstLabel->show();
         ui->firstLine->show();
@@ -35,6 +39,8 @@ Dialog::Dialog(QWidget *parent,
         ui->radioGroup->show();
     if(checkbox)
         ui->checkBox->show();
+    if(combobox)
+        ui->comboBox->show();
 }
 
 Dialog::~Dialog()
@@ -42,7 +48,7 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::getData(QString &first, QString &second, QString &third, bool &radio, bool &checkbox)
+void Dialog::getData(QString &first, QString &second, QString &third, bool &radio, bool &checkbox, QString &combobox)
 {
     first = ui->firstLine->text();
     second = ui->secLine->text();
@@ -58,6 +64,9 @@ void Dialog::getData(QString &first, QString &second, QString &third, bool &radi
         checkbox = true;
     else
         checkbox = false;
+    combobox = ui->comboBox->currentText();
+    qDebug() << "Dialog::combobox current text"
+             << ui->comboBox->currentText();
 }
 
 void Dialog::setFirstLine(QString label, QString line)
@@ -84,9 +93,16 @@ void Dialog::setRadio(QString first, QString second)
     ui->radio2->setText(second);
 }
 
-void Dialog::setCheckBox(QString check)
+void Dialog::setCheckBox(QString check, bool state)
 {
     ui->checkBox->setText(check);
+    ui->checkBox->setChecked(state);
+}
+
+void Dialog::setComboBox(QSqlTableModel *model, int column, int active)
+{
+    ui->comboBox->setModel(model);
+    ui->comboBox->setModelColumn(column);
 }
 
 void Dialog::setHeader(QString header)

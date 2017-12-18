@@ -23,7 +23,7 @@ MainWindow {
     background-image: url(:qss/beach.png);
 }
 
-QLabel, QGroupBox::title {
+QGroupBox::title {
     color: #ffffff;
 }
 userdata, Dialog {

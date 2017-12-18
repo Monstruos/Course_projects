@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>373</width>
-    <height>204</height>
+    <width>417</width>
+    <height>269</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -81,6 +81,9 @@
         <widget class="QLineEdit" name="thirdLine"/>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox"/>
      </item>
      <item>
       <widget class="QGroupBox" name="radioGroup">
