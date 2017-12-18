@@ -2,6 +2,7 @@
 #define DIALOG_H
 
 #include <QDialog>
+#include <QDebug>
 
 namespace Ui {
 class Dialog;
@@ -20,8 +21,21 @@ public:
            QString firstLine = "",
            QString secLine = "",
            QString thirdLine = "");
+    Dialog(QWidget *parent = 0,
+           bool firstLine = false,
+           bool secLine = false,
+           bool thirdLine = false,
+           bool radios = false,
+           bool checkbox = false);
     ~Dialog();
-    void getData(QString &name, QString &cost, QString &dur);
+    void getData(QString &first, QString &second, QString &third, bool &radio, bool &checkbox);
+    void setFirstLine(QString label, QString line);
+    void setSecLine(QString label, QString line);
+    void setThirdLine(QString label, QString line);
+    void setRadio(QString first, QString second);
+    void setCheckBox(QString check);
+    void setHeader(QString header);
+
 
 private:
     Ui::Dialog *ui;

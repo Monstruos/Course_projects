@@ -23,10 +23,10 @@ MainWindow {
     background-image: url(:qss/beach.png);
 }
 
-MainWindow > QLabel {
-    color: #FFFFFF;
+QLabel, QGroupBox::title {
+    color: #ffffff;
 }
-userdata {
+userdata, Dialog {
     background-color: #7090f0;
 }
 
@@ -40,8 +40,6 @@ QTabWidget::tab-bar {
     alignment: center;
 }
 
-/* Style the tab using the tab sub-control. Note that
-    it reads QTabBar _not_ QTabWidget */
 QTabBar::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
@@ -62,7 +60,7 @@ QTabBar::tab:selected, QTabBar::tab:hover {
 
 QTabBar::tab:selected {
     border-color: #9B9B9B;
-    border-bottom-color: #C2C7CB; /* same as pane color */
+    border-bottom-color: #C2C7CB;
 }
 
 QTableView {

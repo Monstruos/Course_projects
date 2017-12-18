@@ -139,7 +139,7 @@ void MainWindow::on_addAbon_clicked()
     if(res == Dialog::Accepted) {
         QSqlQuery query;
         QString name, cost, dur;
-        a.getData(name, cost, dur);
+        //a.getData(name, cost, dur);
         qDebug() << name << cost << dur;
         query.prepare("INSERT INTO AbonType (AbonId, Name, Cost, Dur)"
                       "VALUES(:id, :name, :cost, :dur);");
@@ -161,12 +161,16 @@ void MainWindow::on_dbView_2_doubleClicked(const QModelIndex &index)
     QString cost = mod2->data(mod2->index(row, 2)).toString();
     QString dur = mod2->data(mod2->index(row, 3)).toString();
     qDebug() << name;
-    Dialog a(this, "Изменить абонемент", "Название", "Стоимость", "Длительность", name, cost, dur);
+    Dialog a(this, true, true, true, false, false);
+    a.setHeader("Изменить абонемент");
+    a.setFirstLine("Название:", name);
+    a.setSecLine("Стоимость:", cost);
+    a.setThirdLine("Длительность:", dur);
     int res = a.exec();
     if(res == Dialog::Accepted) {
         QSqlQuery query;
-        QString name, cost, dur;
-        a.getData(name, cost, dur);
+        bool buf1, buf2;
+        a.getData(name, cost, dur, buf1, buf2);
         qDebug() << name << cost << dur;
         query.prepare("UPDATE AbonType SET "
                       "Name = :name, Cost = :cost, Dur = :dur "
@@ -183,24 +187,37 @@ void MainWindow::on_dbView_2_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_newUser_clicked()
 {
-    Dialog a(this, "Новый пользователь", "Имя", "Телефон", "Пол (Мужской/Женский)");
+    Dialog a(this, true, true, false, true, false);
+    a.setHeader("Новый пользователь");
+    a.setFirstLine("ФИО:","");
+    a.setSecLine("Телефон:", "");
+    a.setRadio("Мужчина", "Женщина");
     int res = a.exec();
     if(res == Dialog::Accepted) {
         QSqlQuery query;
-        QString name, phone, gender;
-        a.getData(name, phone, gender);
+
+        QString name, phone, buf1; // variables for getData()
+        bool gender, buf2;
+        a.getData(name, phone, buf1, gender, buf2);
         qDebug() << name << phone << gender;
+        QString g;
+        if(gender == true) {
+            g = "Мужской";
+        } else {
+            g = "Женский";
+        }
         query.prepare("INSERT INTO PoolVisit (Name, Phone, Gender)"
                       "VALUES(:name, :phone, :gend);");
         query.bindValue(":name", name);
-        query.bindValue(":phone", phone);
-        query.bindValue(":gend", gender);
+        query.bindValue(":phone", phone.toInt());
+        query.bindValue(":gend", g);
         qDebug() << query.exec();
-        mod->setFilter(QString("Name = " + name + ", Phone = " + phone + ", Gender = " + gender));
+        mod->setFilter("");
         mod->select();
-        qDebug() << mod->data(mod->index(1, 1)).toInt();
-        ud->setData(mod->data(mod->index(1, 1)).toInt());
-
+        mod->setFilter(QString("Name='" + name + "' AND Phone=" + phone + " AND Gender='" + g + "'"));
+        mod->select();
+        int rec = mod->record(0).field(0).value().toInt();
+        ud->setData(rec);
         ud->exec();
         mod->setFilter("");
         mod->select();
