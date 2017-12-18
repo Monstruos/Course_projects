@@ -23,11 +23,14 @@ MainWindow {
     background-image: url(:qss/beach.png);
 }
 
+MainWindow > QLabel {
+    color: #FFFFFF;
+}
 userdata {
     background-color: #7090f0;
 }
 
-QTabWidget::pane { /* The tab widget frame */
+QTabWidget::pane {
     border-top: 2px solid #C2C7CB;
     position: absolute;
     top: -0.5em;
@@ -64,6 +67,7 @@ QTabBar::tab:selected {
 
 QTableView {
     selection-background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
-                                stop: 0 #b3ffff, stop: 1 white);
-    background-color: #7A9AfA;
+                                stop: 0 #b3ffff, stop: 1 #7a9afa);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
+                      stop: 0 #7a9afa, stop: 1 #ffffff);
 }

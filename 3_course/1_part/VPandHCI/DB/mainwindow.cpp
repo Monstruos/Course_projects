@@ -180,3 +180,30 @@ void MainWindow::on_dbView_2_doubleClicked(const QModelIndex &index)
         ui->dbView_2->repaint();
     }
 }
+
+void MainWindow::on_newUser_clicked()
+{
+    Dialog a(this, "Новый пользователь", "Имя", "Телефон", "Пол (Мужской/Женский)");
+    int res = a.exec();
+    if(res == Dialog::Accepted) {
+        QSqlQuery query;
+        QString name, phone, gender;
+        a.getData(name, phone, gender);
+        qDebug() << name << phone << gender;
+        query.prepare("INSERT INTO PoolVisit (Name, Phone, Gender)"
+                      "VALUES(:name, :phone, :gend);");
+        query.bindValue(":name", name);
+        query.bindValue(":phone", phone);
+        query.bindValue(":gend", gender);
+        qDebug() << query.exec();
+        mod->setFilter(QString("Name = " + name + ", Phone = " + phone + ", Gender = " + gender));
+        mod->select();
+        qDebug() << mod->data(mod->index(1, 1)).toInt();
+        ud->setData(mod->data(mod->index(1, 1)).toInt());
+
+        ud->exec();
+        mod->setFilter("");
+        mod->select();
+        ui->dbView->repaint();
+    }
+}

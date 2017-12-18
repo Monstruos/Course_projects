@@ -28,6 +28,8 @@ private slots:
 
     void on_cancelAbon_clicked();
 
+    void on_prevAbon_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::userdata *ui;
     DataBase *b;

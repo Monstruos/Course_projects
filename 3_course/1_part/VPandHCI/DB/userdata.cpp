@@ -11,6 +11,9 @@ userdata::userdata(DataBase *db, QWidget *parent) :
     ui->abonDurToLine->setText("");
     ui->abonDurToLine->setText("");
     ui->isCost->setChecked(false);
+    ui->prevAbon->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->prevAbon->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->prevAbon->setEditTriggers(QAbstractItemView::NoEditTriggers);
     this->setWindowTitle("Информация о пользователе");
     model = new QSqlRelationalTableModel();
     model->setTable(TABLE2);
@@ -170,4 +173,9 @@ void userdata::on_cancelAbon_clicked()
     ui->includeAbon->hide();
     ui->cancelAbon->hide();
     ui->groupBox_2->hide();
+}
+
+void userdata::on_prevAbon_doubleClicked(const QModelIndex &index)
+{
+
 }

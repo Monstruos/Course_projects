@@ -32,6 +32,8 @@ private slots:
 
     void on_dbView_2_doubleClicked(const QModelIndex &index);
 
+    void on_newUser_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlTableModel *mod;
