@@ -26,8 +26,9 @@ userdata::userdata(DataBase *db, QWidget *parent) :
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Дата регистрации"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("Длительность абонемента"));
     model->setHeaderData(4, Qt::Horizontal, QObject::tr("Уплачено:"));
-    model->setRelation(5, QSqlRelation("AbonType", "AbonId", "Name"));
     model->setHeaderData(5, Qt::Horizontal, QObject::tr("Тип абонемента:"));
+    model->setRelation(4, QSqlRelation("YN", "id", "Name"));
+    model->setRelation(5, QSqlRelation("AbonType", "AbonId", "Name"));
     abonModel = new QSqlTableModel();
     abonModel->setTable(TABLE3);
 }
@@ -188,14 +189,23 @@ void userdata::on_prevAbon_doubleClicked(const QModelIndex &index)
     QSqlRecord rec = model->record(0);
     QString from = rec.field(1).value().toString();
     QString to = rec.field(2).value().toString();
-    bool isCost = rec.field(4).value().toBool();
-    int AbonId = rec.field(5).value().toInt();
-    qDebug() << from << to << isCost << AbonId;
+    QString isCost = rec.field(4).value().toString();
+    QString AbonId = rec.field(5).value().toString();
+
+
+    int intCost, idAbonement;
+    QSqlQuery *s = new QSqlQuery();
+    s->exec(QString("SELECT id FROM YN WHERE Name = '" + isCost + "'"));
+    s->next();
+    intCost = s->value(0).toInt();
+    s->exec(QString("SELECT AbonId FROM AbonType WHERE Name = '" + AbonId + "'"));
+    s->next();
+    idAbonement = s->value(0).toInt();
     a.setHeader("Просмотр и редактирование абонемента");
     a.setFirstLine("Действителен с:", from);
     a.setSecLine("Действителен до:", to);
-    a.setCheckBox("Оплачено", isCost);
-    a.setComboBox(abonModel, 1, AbonId-1);
+    a.setCheckBox("Оплачено:", (bool)intCost);
+    a.setComboBox(abonModel, 1, idAbonement);
     int res = a.exec();
     if(res == Dialog::Accepted) {
         QSqlQuery query;
@@ -204,8 +214,6 @@ void userdata::on_prevAbon_doubleClicked(const QModelIndex &index)
 
         a.getData(RegFrom, RegTo, buf1, buf2, cost, TypeAbon);
         int c = cost;
-        qDebug() << RegFrom << RegTo << cost << "(" << c << ")"
-                 << TypeAbon;
 
         //parsing to Date
 
@@ -219,9 +227,7 @@ void userdata::on_prevAbon_doubleClicked(const QModelIndex &index)
         }
 
         //finding Abonement type
-        qDebug() << "TypeAbon = " << TypeAbon
-                 << "FILTER: " << QString("Name = '" + TypeAbon + "'");
-        abonModel->setFilter(QString("Name = '" + TypeAbon + "'"));
+        abonModel->setFilter(QString("Name = " + TypeAbon));
         abonModel->select();
 
 
@@ -231,13 +237,13 @@ void userdata::on_prevAbon_doubleClicked(const QModelIndex &index)
                       "isPaid = :pd, "
                       "AbonId = :aid "
                       "WHERE idAbonements = :id");
-        query.bindValue(":id", id);
+        query.bindValue(":id", iden);
         query.bindValue(":dof", dateFrom.toString("yyyy-MM-dd"));
         query.bindValue(":sd", dateTo.toString("yyyy-MM-dd"));
         query.bindValue(":pd", c);
-        query.bindValue(":aid", abonModel->record(0).field(0).value().toInt());
-        qDebug() << iden << dateFrom << dateTo << c << abonModel->record(0).field(0).value().toInt();
-        qDebug() << query.exec();
+        query.bindValue(":aid", abonModel->record(0).field(0).value().toInt() + 1);
+        qDebug() << "query: " << iden << dateFrom << dateTo << c << abonModel->record(0).field(0).value().toInt();
+        qDebug() << "query: " << query.exec();
         abonModel->setFilter("");
         abonModel->select();
         model->setFilter("UserID = " + QString::number(id) +
@@ -247,4 +253,61 @@ void userdata::on_prevAbon_doubleClicked(const QModelIndex &index)
         ui->prevAbon->repaint();
     }
 
+}
+
+void userdata::on_pushButton_clicked()
+{
+    Dialog a(this, true, true, false, true);
+    a.setHeader("Редактирование контактных данных");
+    a.setFirstLine("ФИО:", name);
+    a.setSecLine("Телефон:", phone);
+    a.setRadio("Мужчина", "Женщина");
+    int res = a.exec();
+    if(res == Dialog::Accepted) {
+        QSqlQuery query;
+        QString n, p, buf1, buf3;
+        bool radio, buf2;
+
+        a.getData(n, p, buf1, radio, buf2, buf3);
+        qDebug() << n << p << radio;
+
+        //parsing to phone to int
+
+        bool ok = true;
+        p.toLongLong(&ok);
+        if(!ok) {
+            QMessageBox::warning(this,
+                                 "Ошибка",
+                                 "Не удалось изменить данные. Несоответствие данных формату");
+            return;
+        }
+
+        name = n;
+        phone = p;
+        radio ? gender = "Мужской" : gender = "Женский";
+
+
+
+        query.prepare("UPDATE PoolVisit SET "
+                      "Name = :n, "
+                      "Phone = :p, "
+                      "Gender = :g "
+                      "WHERE id = :id");
+        qDebug() << QString("UPDATE PoolVisit SET "
+                            "Name = '" + name + "', "
+                            "Phone = '" + phone + "', "
+                            "Gender = '" + gender + "' "
+                            "WHERE id = " + QString::number(id) + "");
+        query.bindValue(":id", id);
+        query.bindValue(":n", name);
+        query.bindValue(":p", phone);
+        query.bindValue(":g", gender);
+        qDebug() << id << name << phone << gender;
+        qDebug() << "exec: " << query.exec();
+        ui->phone->setText("Телефон: " + phone);
+        ui->gender->setText("Пол: " + gender);
+        ui->username->setText(name);
+
+        ui->prevAbon->repaint();
+    }
 }

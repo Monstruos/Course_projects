@@ -65,8 +65,6 @@ void Dialog::getData(QString &first, QString &second, QString &third, bool &radi
     else
         checkbox = false;
     combobox = ui->comboBox->currentText();
-    qDebug() << "Dialog::combobox current text"
-             << ui->comboBox->currentText();
 }
 
 void Dialog::setFirstLine(QString label, QString line)

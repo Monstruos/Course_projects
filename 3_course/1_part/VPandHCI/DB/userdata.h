@@ -32,6 +32,8 @@ private slots:
 
     void on_prevAbon_doubleClicked(const QModelIndex &index);
 
+    void on_pushButton_clicked();
+
 private:
     Ui::userdata *ui;
     DataBase *b;

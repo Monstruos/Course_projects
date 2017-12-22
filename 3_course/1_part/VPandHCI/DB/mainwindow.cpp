@@ -130,8 +130,17 @@ void MainWindow::on_maxData_textChanged(const QString &arg1)
 
 void MainWindow::on_dbView_doubleClicked(const QModelIndex &index)
 {
-    ud->setData(index.row()+1);
+
+    QString iden = mod->data(mod->index(index.row(), 1)).toString();
+    qDebug() << "iden = " << iden;
+    mod->setFilter(QString("Name = '" + iden + "'"));
+    mod->select();
+    qDebug() << mod->data(mod->index(0, 0)).toInt();
+    ud->setData(mod->data(mod->index(0, 0)).toInt());
     ud->exec();
+    mod->setFilter("");
+    mod->select();
+    ui->dbView->repaint();
 }
 
 

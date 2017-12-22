@@ -15,14 +15,6 @@ class Dialog : public QDialog
 
 public:
     Dialog(QWidget *parent = 0,
-           QString header = "header",
-           QString first = "first",
-           QString second = "second",
-           QString third = "third",
-           QString firstLine = "",
-           QString secLine = "",
-           QString thirdLine = "");
-    Dialog(QWidget *parent = 0,
            bool firstLine = false,
            bool secLine = false,
            bool thirdLine = false,
